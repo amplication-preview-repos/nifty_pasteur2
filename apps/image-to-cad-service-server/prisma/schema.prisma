@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Image {
+  conversionJobs ConversionJob[]
+  createdAt      DateTime         @default(now())
+  format         EnumImageFormat?
+  id             String           @id @default(cuid())
+  updatedAt      DateTime         @updatedAt
+  url            String?
+}
+
+model CadFile {
+  conversionJobs ConversionJob[]
+  createdAt      DateTime           @default(now())
+  format         EnumCadFileFormat?
+  id             String             @id @default(cuid())
+  updatedAt      DateTime           @updatedAt
+  url            String?
+}
+
+model ConversionJob {
+  cadFile   CadFile?                 @relation(fields: [cadFileId], references: [id])
+  cadFileId String?
+  createdAt DateTime                 @default(now())
+  id        String                   @id @default(cuid())
+  image     Image?                   @relation(fields: [imageId], references: [id])
+  imageId   String?
+  status    EnumConversionJobStatus?
+  updatedAt DateTime                 @updatedAt
+}
+
+enum EnumImageFormat {
+  Option1
+}
+
+enum EnumCadFileFormat {
+  Option1
+}
+
+enum EnumConversionJobStatus {
+  Option1
+}
